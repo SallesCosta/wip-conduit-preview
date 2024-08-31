@@ -30,29 +30,46 @@ type RegistrationInput struct {
 	} `json:"user"`
 }
 
+type AuthenticationInput struct {
+	User struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	} `json:"user"`
+}
+
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user RegistrationInput
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	email := user.User.Email
+	userFound, err := h.UserDB.FindByEmail(email)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	if userFound != nil {
+		http.Error(w, "User already exists", http.StatusConflict)
+		return
 	}
 
 	u, err := userEntity.NewUser(user.User.UserName, user.User.Email, user.User.Password)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	err = h.UserDB.CreateUser(u)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-}
-
-type AuthenticationInput struct {
-	User struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	} `json:"user"`
 }
 
 func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
@@ -97,10 +114,8 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) ListAllUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("55555555555")
 	list, err := h.UserDB.GetAllUsers()
 	if err != nil {
-		fmt.Println("444444444444")
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 

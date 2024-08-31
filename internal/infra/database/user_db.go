@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"github.com/lib/pq"
 
-	//"encoding/json"
 	"fmt"
 	"github.com/sallescosta/conduit-api/pkg/entity"
 	"log"
@@ -52,6 +51,7 @@ func NewUser(db *sql.DB) *User {
 }
 
 func (u *User) CreateUser(user *userEntity.User) error {
+
 	stmt, err := u.DB.Prepare("INSERT INTO users (id, username, email, password, bio, image, following) VALUES ($1, $2, $3, $4, $5, $6, $7)")
 	if err != nil {
 		log.Fatal(err)
@@ -75,12 +75,15 @@ func (u *User) CreateUser(user *userEntity.User) error {
 func (u *User) FindUserBy(field, value string) (*userEntity.User, error) {
 	query := fmt.Sprintf("SELECT id, username, email, password, bio, image, following FROM users WHERE %s = $1", field)
 	stmt, err := u.DB.Prepare(query)
+
 	if err != nil {
 		return nil, err
 	}
+
 	defer stmt.Close()
 
 	var user userEntity.User
+
 	err = stmt.QueryRow(value).Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Bio, &user.Image, pq.Array(&user.Following))
 	if err != nil {
 		if err == sql.ErrNoRows {

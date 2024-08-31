@@ -24,7 +24,6 @@ func DoHash(password string) (hash []byte, err error) {
 }
 
 func NewUser(username, email, password string) (*User, error) {
-
 	hash, err := DoHash(password)
 	if err != nil {
 		return nil, err

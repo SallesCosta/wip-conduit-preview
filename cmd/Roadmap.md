@@ -7,9 +7,9 @@
 [] Get Profile
 [] Follow User
 [] Unfollow User
-[] List Anticles
-[] Feed Anticles
-[] Get Anticle
+[] List Articles
+[] Feed Articles
+[] Get Article
 [] Create Article
 [] Update Article
 [] Delete Article

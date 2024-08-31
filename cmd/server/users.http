@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8080/api
 @token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU5MTk1ODYsInN1YiI6IjcyNzAxZTI3LTMxOWEtNDQ4My1iNTYyLWZlNmRjY2QyM2Y5MCJ9._sIrlvjDVvHi8ia6_N62UJI4kv1HafuZNIe7LvClVTw
-@name = "thomas"
+@name = "karol"
 @email = "thomas@email.com"
 @password = "root"
 
