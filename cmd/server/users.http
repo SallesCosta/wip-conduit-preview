@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:8080/api
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU5MTk1ODYsInN1YiI6IjcyNzAxZTI3LTMxOWEtNDQ4My1iNTYyLWZlNmRjY2QyM2Y5MCJ9._sIrlvjDVvHi8ia6_N62UJI4kv1HafuZNIe7LvClVTw
-@name = "karol"
-@email = "thomas@email.com"
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjY3ODEyOTAsInN1YiI6ImZiYmRjZDIxLWFlZmMtNGQxNC1hMmM1LTFhZjc5ZDg1ZTliYyJ9.m84bbEAwZNjwI8W_yE7bolU4-EbZyxEqj8LWYFkDmwU
+@name = "oliveira"
+@email = "oliveira@email.com"
 @password = "root"
 
 ### Create a new user
@@ -50,5 +50,5 @@ Authorization: {{token}}
 }
 
 ###
-GET {{baseUrl}}/profiles/eduardo
+GET {{baseUrl}}/profiles/karol
 Authorization: {{token}}

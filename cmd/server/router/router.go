@@ -37,7 +37,7 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Use(jwtauth.Verifier(config.TokenAuth))
 		r.Use(jwtauth.Authenticator)
 
-		//r.Get("/{username}", userHandler.GetProfileUser)
+		r.Get("/{username}", userHandler.GetProfileUser)
 
 		//r.Post("/follow", handlers.GenericHandler)
 		//r.Delete("/follow", handlers.GenericHandler)
