@@ -8,8 +8,7 @@ import (
 	"github.com/sallescosta/conduit-api/internal/dto"
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
-	"github.com/sallescosta/conduit-api/pkg/entity"
-	"log"
+	"github.com/sallescosta/conduit-api/pkg/helpers"
 	"net/http"
 	"time"
 )
@@ -82,16 +81,12 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("ENTRADA:", user)
-
 	u, err := h.UserDB.FindByEmail(user.User.Email)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
 
-	fmt.Println("BYEMAIL:", u)
 	if !u.ValidatePassword(user.User.Password) {
-		fmt.Println("unautorized:")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -147,9 +142,7 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
-	token := r.Context()
-	_, claims, _ := jwtauth.FromContext(token)
-	id := claims["sub"].(string)
+	id := helpers.GetMyOwnIdbyToken(r)
 
 	user, err := h.UserDB.FindById(id)
 
@@ -167,7 +160,6 @@ func (h *UserHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
-	// pegar o destinatários do request
 	userName := chi.URLParam(r, "username")
 
 	p, err := h.UserDB.GetProfileDb(userName)
@@ -176,57 +168,32 @@ func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf(">>>>", p)
-
-	if err := json.NewEncoder(w).Encode(p); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	// pegar meu proprio id
-	token := r.Context()
-
-	_, claims, _ := jwtauth.FromContext(token)
-	id := claims["sub"].(string)
+	id := helpers.GetMyOwnIdbyToken(r)
 
 	user, err := h.UserDB.FindById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 	}
 
-	if err := json.NewEncoder(w).Encode(user); err != nil {
+	isFollowing := helpers.Contain(user.Following, p.Profile.ID)
+
+	profile := dto.ProfileDTO{
+		Profile: struct {
+			UserName  string `json:"user_name"`
+			Bio       string `json:"bio"`
+			Image     string `json:"image"`
+			Following bool   `json:"following"`
+		}{
+			UserName:  userName,
+			Bio:       p.Profile.Bio,
+			Image:     p.Profile.Image,
+			Following: isFollowing,
+		},
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(profile); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	isFollowing := contain(user.Following, p.Profile.ID)
-
-	log.Printf("1 ----", isFollowing)
-	//
-	//profile := dto.ProfileDTO{
-	//	Profile: struct {
-	//		UserName  string `json:"user_name"`
-	//		Bio       string `json:"bio"`
-	//		Image     string `json:"image"`
-	//		Following bool   `json:"following"`
-	//	}{
-	//		UserName:  userName,
-	//		Bio:       p.Profile.Bio,
-	//		Image:     p.Profile.Image,
-	//		Following: isFollowing,
-	//	},
-	//}
-	//
-	//w.Header().Set("Content-Type", "application/json")
-	//w.WriteHeader(http.StatusOK)
-	//if err := json.NewEncoder(w).Encode(profile); err != nil {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//}
-}
-
-func contain(IdsSlice []entity.ID, id entity.ID) bool {
-	for _, followedID := range IdsSlice {
-		if followedID == id {
-			return true
-		}
-	}
-	return false
 }

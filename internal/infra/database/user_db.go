@@ -51,7 +51,6 @@ func NewUser(db *sql.DB) *User {
 }
 
 func (u *User) CreateUser(user *userEntity.User) error {
-
 	stmt, err := u.DB.Prepare("INSERT INTO users (id, username, email, password, bio, image, following) VALUES ($1, $2, $3, $4, $5, $6, $7)")
 	if err != nil {
 		log.Fatal(err)
@@ -166,7 +165,7 @@ func (u *User) GetAllUsers() ([]userEntity.User, error) {
 func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
 	var profile ProfileWithId
 
-	err := u.DB.QueryRow("SELECT  bio, image, id FROM users WHERE username = $1", userName).
+	err := u.DB.QueryRow("SELECT id, bio, image FROM users WHERE username = $1", userName).
 		Scan(&profile.Profile.ID, &profile.Profile.Bio, &profile.Profile.Image)
 	if err != nil {
 		return nil, err
