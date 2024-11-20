@@ -22,7 +22,7 @@ type Conf struct {
 	DBDriver string `mapstructure:"DB_DRIVER"`
 }
 
-func LoadConfig(path string) (*Conf, error) {
+func LoadConfig() (*Conf, error) {
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func LoadConfig(path string) (*Conf, error) {
 
 	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil)
 
-	cfg := &Conf{
+	return &Conf{
 		DBHost:       os.Getenv("DB_HOST"),
 		DBPort:       port,
 		DBUser:       os.Getenv("DB_USER"),
@@ -48,7 +48,5 @@ func LoadConfig(path string) (*Conf, error) {
 		WebServePort: os.Getenv("WEB_SERVER_PORT"),
 		JwtExpiresIn: jwtExpiresIn,
 		TokenAuth:    tokenAuth,
-	}
-
-	return cfg, err
+	}, err
 }
