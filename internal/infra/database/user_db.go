@@ -173,3 +173,23 @@ func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
 
 	return &profile, nil
 }
+
+func (u *User) UpdateFollowingUserDb(id string, following []entity.ID) error {
+	stmt, err := u.DB.Prepare("UPDATE users SET following = $1 WHERE id = $2")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	followingStr := make([]string, len(following))
+	for i, id := range following {
+		followingStr[i] = id.String()
+	}
+
+	_, err = stmt.Exec(pq.Array(followingStr), id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

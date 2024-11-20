@@ -2,6 +2,7 @@ package database
 
 import (
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
+	"github.com/sallescosta/conduit-api/pkg/entity"
 )
 
 type UserInterface interface {
@@ -11,4 +12,5 @@ type UserInterface interface {
 	GetAllUsers() ([]userEntity.User, error)
 	UpdateUserDb(email, username, password, image, bio string) (*userEntity.User, error)
 	GetProfileDb(userName string) (*ProfileWithId, error)
+	UpdateFollowingUserDb(id string, following []entity.ID) error
 }

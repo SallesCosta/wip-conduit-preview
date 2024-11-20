@@ -3,14 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"github.com/sallescosta/conduit-api/pkg/helpers"
-	"net/http"
-	"time"
 )
 
 type UserHandler struct {
@@ -51,6 +52,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
 	if userFound != nil {
 		http.Error(w, "User already exists", http.StatusConflict)
 		return
@@ -178,12 +180,7 @@ func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 	isFollowing := helpers.Contain(user.Following, p.Profile.ID)
 
 	profile := dto.ProfileDTO{
-		Profile: struct {
-			UserName  string `json:"user_name"`
-			Bio       string `json:"bio"`
-			Image     string `json:"image"`
-			Following bool   `json:"following"`
-		}{
+		Profile: dto.Profile{
 			UserName:  userName,
 			Bio:       p.Profile.Bio,
 			Image:     p.Profile.Image,
@@ -192,6 +189,70 @@ func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(profile); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func (h *UserHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
+	myId := helpers.GetMyOwnIdbyToken(r)
+	fmt.Println("meu myId: ", myId)
+
+	mySelf, err := h.UserDB.FindById(myId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	userName := chi.URLParam(r, "username")
+
+	p, err := h.UserDB.GetProfileDb(userName)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	if mySelf.ID == p.Profile.ID {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
+	var isFollowing bool
+
+	switch r.Method {
+	case http.MethodPost:
+
+		if helpers.Contain(mySelf.Following, p.Profile.ID) {
+			w.WriteHeader(http.StatusConflict)
+			return
+		}
+
+		mySelf.Following = append(mySelf.Following, p.Profile.ID)
+		isFollowing = true
+	case http.MethodDelete:
+		for i, followedID := range mySelf.Following {
+			if followedID == p.Profile.ID {
+				mySelf.Following = append(mySelf.Following[:i], mySelf.Following[i+1:]...)
+				break
+			}
+		}
+		isFollowing = false
+	}
+
+	err = h.UserDB.UpdateFollowingUserDb(mySelf.ID.String(), mySelf.Following)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	profile := dto.ProfileDTO{
+		Profile: dto.Profile{
+			UserName:  userName,
+			Bio:       p.Profile.Bio,
+			Image:     p.Profile.Image,
+			Following: isFollowing,
+		},
+	}
+
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(profile); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

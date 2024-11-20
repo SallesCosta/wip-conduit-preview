@@ -2,41 +2,53 @@ package configs
 
 import (
 	"github.com/go-chi/jwtauth"
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
+	"log"
+	"strconv"
+
+	"os"
 )
 
 type Conf struct {
-	DBDriver     string `mapstructure:"DB_DRIVER"`
 	DBHost       string `mapstructure:"DB_HOST"`
 	DBPort       string `mapstructure:"DB_PORT"`
 	DBUser       string `mapstructure:"DB_USER"`
 	DBPassword   string `mapstructure:"DB_PASSWORD"`
 	DBName       string `mapstructure:"DB_NAME"`
 	WebServePort string `mapstructure:"WEB_SERVER_PORT"`
-	JwtSecret    string `mapstructure:"JWT_SECRET"`
 	JwtExpiresIn int    `mapstructure:"JWT_EXPIRESIN"`
 	TokenAuth    *jwtauth.JWTAuth
+
+	DBDriver string `mapstructure:"DB_DRIVER"`
 }
 
 func LoadConfig(path string) (*Conf, error) {
-	var cfg *Conf
-
-	viper.SetConfigName("conduit-api")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
-	viper.AutomaticEnv()
-
-	err := viper.ReadInConfig()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
 
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		panic(err)
+	port := os.Getenv("DB_PORT")
+	if port == "" {
+		port = "8080"
 	}
 
-	cfg.TokenAuth = jwtauth.New("HS256", []byte(cfg.JwtSecret), nil)
+	jwtExpiresIn, err := strconv.Atoi(os.Getenv("JWT_EXPIRESIN"))
+	if err != nil {
+		log.Fatalf("Erro ao converter JWT_EXPIRESIN para inteiro: %v", err)
+	}
+
+	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil)
+
+	cfg := &Conf{
+		DBHost:       os.Getenv("DB_HOST"),
+		DBPort:       port,
+		DBUser:       os.Getenv("DB_USER"),
+		DBPassword:   os.Getenv("DB_PASSWORD"),
+		DBName:       os.Getenv("DB_NAME"),
+		WebServePort: os.Getenv("WEB_SERVER_PORT"),
+		JwtExpiresIn: jwtExpiresIn,
+		TokenAuth:    tokenAuth,
+	}
+
 	return cfg, err
 }

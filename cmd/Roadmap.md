@@ -4,8 +4,8 @@
 [x] Authentication;
 [x] Get Current User
 [x] Update user
-[] Get Profile
-[] Follow User
+[x] Get Profile
+[x] Follow User
 [] Unfollow User
 [] List Articles
 [] Feed Articles

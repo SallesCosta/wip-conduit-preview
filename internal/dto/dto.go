@@ -2,12 +2,12 @@ package dto
 
 // ##############  inputs ##############
 
-//type AuthenticationInput struct {
-//	User struct {
-//		Email    string `json:"email"`
-//		Password string `json:"password"`
-//	} `json:"user"`
-//}
+type AuthenticationInput struct {
+	User struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	} `json:"user"`
+}
 
 type UserDTO = struct {
 	User struct {
@@ -47,13 +47,24 @@ type AuthenticationOutput struct {
 	Image    string `json:"image"`
 }
 
+//type ProfileDTO struct {
+//	Profile struct {
+//		UserName  string `json:"user_name"`
+//		Bio       string `json:"bio"`
+//		Image     string `json:"image"`
+//		Following bool   `json:"following"`
+//	} `json:"profile"`
+//}
+
+type Profile struct {
+	UserName  string `json:"user_name"`
+	Bio       string `json:"bio"`
+	Image     string `json:"image"`
+	Following bool   `json:"following"`
+}
+
 type ProfileDTO struct {
-	Profile struct {
-		UserName  string `json:"user_name"`
-		Bio       string `json:"bio"`
-		Image     string `json:"image"`
-		Following bool   `json:"following"`
-	} `json:"profile"`
+	Profile Profile `json:"profile"`
 }
 
 type ArticleOutput struct {
