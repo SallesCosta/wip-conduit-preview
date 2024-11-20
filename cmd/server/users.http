@@ -1,8 +1,9 @@
 @baseUrl = http://localhost:8080/api
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjY3ODEyOTAsInN1YiI6ImZiYmRjZDIxLWFlZmMtNGQxNC1hMmM1LTFhZjc5ZDg1ZTliYyJ9.m84bbEAwZNjwI8W_yE7bolU4-EbZyxEqj8LWYFkDmwU
-@name = "oliveira"
-@email = "oliveira@email.com"
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzMxMjA1MjIsInN1YiI6ImFkY2M2OGExLWIyNzAtNDY5MS04ZGQxLTY2Y2I3N2ZlZDQ0YiJ9.xwXezT3P9PNQojRGmFf4sLE0mEWkDxF8Jvwmdt3Afgw
+@name = "new-user"
+@email = "newuser@email.com"
 @password = "root"
+@userToFollow = yeah
 
 ### Create a new user
 POST {{baseUrl}}/users HTTP/1.1
@@ -45,10 +46,18 @@ Authorization: {{token}}
 {
   "user":{
     "email": {{email}},
-    "username": "yeah"
+    "username": "danilo"
   }
 }
 
 ###
-GET {{baseUrl}}/profiles/karol
+GET {{baseUrl}}/profiles/{{userToFollow}}
+Authorization: {{token}}
+
+### Follow a user
+POST {{baseUrl}}/profiles/{{userToFollow}}/follow
+Authorization: {{token}}
+
+### UNfollow a user
+DELETE {{baseUrl}}/profiles/{{userToFollow}}/follow
 Authorization: {{token}}

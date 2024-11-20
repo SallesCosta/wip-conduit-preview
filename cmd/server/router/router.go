@@ -38,8 +38,8 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Use(jwtauth.Authenticator)
 
 		r.Get("/{username}", userHandler.GetProfileUser)
-
-		//r.Post("/follow", handlers.GenericHandler)
+		r.Post("/{username}/follow", userHandler.FollowUser)
+		r.Delete("/{username}/follow", userHandler.FollowUser)
 		//r.Delete("/follow", handlers.GenericHandler)
 	})
 
