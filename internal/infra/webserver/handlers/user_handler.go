@@ -163,8 +163,10 @@ func (h *UserHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 	userName := chi.URLParam(r, "username")
+	fmt.Println("getHandler :", userName)
 
 	p, err := h.UserDB.GetProfileDb(userName)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

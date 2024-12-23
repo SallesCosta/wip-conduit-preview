@@ -2,11 +2,14 @@ package database
 
 import (
 	"database/sql"
+	"strings"
+
 	"github.com/lib/pq"
 
 	"fmt"
-	"github.com/sallescosta/conduit-api/pkg/entity"
 	"log"
+
+	"github.com/sallescosta/conduit-api/pkg/entity"
 
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
 )
@@ -163,11 +166,25 @@ func (u *User) GetAllUsers() ([]userEntity.User, error) {
 }
 
 func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
+	query := "SELECT id, bio, image FROM users WHERE username = $1"
+	stmt, err := u.DB.Prepare(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
 	var profile ProfileWithId
 
-	err := u.DB.QueryRow("SELECT id, bio, image FROM users WHERE username = $1", userName).
-		Scan(&profile.Profile.ID, &profile.Profile.Bio, &profile.Profile.Image)
+	userName = strings.Trim(userName, "\"")
+	fmt.Println("getDB :", userName)
+
+	err = stmt.QueryRow(userName).Scan(&profile.Profile.ID, &profile.Profile.Bio, &profile.Profile.Image)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
