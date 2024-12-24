@@ -1,8 +1,8 @@
 @baseUrl = http://localhost:8080/api
 @name = "zedascove"
-@email = "zedascove@email.com"
+@email = "uejjjjjjjrll@email.com"
 @password = "root"
-@userToFollow = "danilo"
+@userToFollow = "Danilo"
 
 
 
@@ -53,8 +53,9 @@ Authorization: Bearer {{token}}
 {
   "user":{
     "email": {{email}},
-    "username": "ze da silva"
-  }
+    "username": "Danilo",
+    "Bio": "I am a software engineer"
+  } 
 }
 
 ###
