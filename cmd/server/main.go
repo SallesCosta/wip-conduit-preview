@@ -38,6 +38,7 @@ func main() {
 	} else {
 		fmt.Println("Successfully connected to the database!")
 		database.CreateUsersTable(db)
+		database.CreateArticlesTable(db)
 	}
 
 	defer db.Close()

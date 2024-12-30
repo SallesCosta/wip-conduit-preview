@@ -15,6 +15,7 @@ import (
 func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 
 	userHandler := handlers.NewUserHandler(database.NewUser(db))
+	articleHandler := handlers.NewArticleHandler(database.NewArticle(db))
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -40,15 +41,14 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Get("/{username}", userHandler.GetProfileUser)
 		r.Post("/{username}/follow", userHandler.FollowUser)
 		r.Delete("/{username}/follow", userHandler.FollowUser)
-		//r.Delete("/follow", handlers.GenericHandler)
 	})
 
 	r.Route("/api/articles", func(r chi.Router) {
 		r.Use(jwtauth.Verifier(config.TokenAuth))
 		r.Use(jwtauth.Authenticator)
 
+		r.Post("/", articleHandler.CreateArticle)
 		//r.Get("/", handlers.GetArticles)
-		//r.Post("/", handlers.GenericHandler)
 		//r.Get("/feed", handlers.GetArticlesFeed)
 		//r.Get("/{slug}", handlers.GenericHandler)
 		//r.Put("/{slug}", handlers.GenericHandler)

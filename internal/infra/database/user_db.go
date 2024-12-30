@@ -2,8 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"strings"
-
+	"errors"
 	"github.com/lib/pq"
 
 	"fmt"
@@ -120,6 +119,7 @@ func (u *User) UpdateUserDb(email, username, password, image, bio string) (*user
 	}
 
 	if bio != "" {
+		user.Bio = bio
 	}
 
 	hashedPass, err := userEntity.DoHash(password)
@@ -166,6 +166,7 @@ func (u *User) GetAllUsers() ([]userEntity.User, error) {
 }
 
 func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
+	fmt.Println("DB => userName1 ->>", userName)
 	query := "SELECT id, bio, image FROM users WHERE username = $1"
 	stmt, err := u.DB.Prepare(query)
 
@@ -177,13 +178,13 @@ func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
 
 	var profile ProfileWithId
 
-	userName = strings.Trim(userName, "\"")
-	fmt.Println("getDB :", userName)
+	//userName = strings.Trim(userName, "\"")
 
 	err = stmt.QueryRow(userName).Scan(&profile.Profile.ID, &profile.Profile.Bio, &profile.Profile.Image)
+
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("profile not found: %w", err)
 		}
 		return nil, err
 	}

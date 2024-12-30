@@ -67,6 +67,15 @@ type ProfileDTO struct {
 	Profile Profile `json:"profile"`
 }
 
+type ArticleInput struct {
+	Article struct {
+		Title       string   `json:"title"`
+		Description string   `json:"description"`
+		Body        string   `json:"body"`
+		TagList     []string `json:"tag_list"`
+	} `json:"article"`
+}
+
 type ArticleOutput struct {
 	Slug           string       `json:"slug"`
 	Title          string       `json:"title"`

@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -99,12 +99,12 @@ func (h *UserHandler) GetJWT(w http.ResponseWriter, r *http.Request) {
 	}
 	_, tokenString, _ := jwt.Encode(m)
 
-	fmt.Println("tokenString: ", tokenString)
 	accessToken := dto.GetJWTOutput{AccessToken: tokenString}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(accessToken)
+
 	if err != nil {
 		return
 	}
@@ -128,6 +128,7 @@ func (h *UserHandler) ListAllUsers(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var user dto.UserDTO
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -144,7 +145,12 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
-	id := helpers.GetMyOwnIdbyToken(r)
+	id, err := helpers.GetMyOwnIdbyToken(r)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
 
 	user, err := h.UserDB.FindById(id)
 
@@ -158,21 +164,33 @@ func (h *UserHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
 }
 
 func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 	userName := chi.URLParam(r, "username")
-	fmt.Println("getHandler :", userName)
 
-	p, err := h.UserDB.GetProfileDb(userName)
-
-	if err != nil {
+	if userName == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	id := helpers.GetMyOwnIdbyToken(r)
+	p, err := h.UserDB.GetProfileDb(userName)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "no rows in result set") {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	id, err := helpers.GetMyOwnIdbyToken(r)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
 
 	user, err := h.UserDB.FindById(id)
 	if err != nil {
@@ -198,12 +216,16 @@ func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
-	myId := helpers.GetMyOwnIdbyToken(r)
-	fmt.Println("meu myId: ", myId)
+	myId, err := helpers.GetMyOwnIdbyToken(r)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
 
 	mySelf, err := h.UserDB.FindById(myId)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	userName := chi.URLParam(r, "username")

@@ -1,10 +1,8 @@
 @baseUrl = http://localhost:8080/api
-@name = "zedascove"
-@email = "uejjjjjjjrll@email.com"
-@password = "root"
-@userToFollow = "Danilo"
-
-
+@name = "afnf"
+@email = "hff@email.com"
+@password = "aff"
+@userToFollow = Danilo
 
 ### Create a new user
 POST {{baseUrl}}/users HTTP/1.1
@@ -14,7 +12,7 @@ Content-Type: application/json
   "user":{
     "username": {{name}},
     "email": {{email}},
-    "password": "root"
+    "password": {{password}}
   }
 }
 
@@ -33,7 +31,7 @@ Content-Type: application/json
 
 ###
 
-@token = {{ jwt_login.response.body.access_token }}
+@token = {{jwt_login.response.body.access_token}}
 
 ### Get All Users
 GET {{baseUrl}}/user/all
@@ -53,9 +51,9 @@ Authorization: Bearer {{token}}
 {
   "user":{
     "email": {{email}},
-    "username": "Danilo",
+    "username": "nelosoro",
     "Bio": "I am a software engineer"
-  } 
+  }
 }
 
 ###
@@ -69,3 +67,17 @@ Authorization: Bearer {{token}}
 ### UNfollow a user
 DELETE {{baseUrl}}/profiles/{{userToFollow}}/follow
 Authorization: Bearer {{token}}
+
+### Create a new article
+POST {{baseUrl}}/articles HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "article": {
+    "title": "How to train your dragon",
+    "description": "Ever wonder how?",
+    "body": "You have to believe",
+    "tagList": ["reactjs", "angularjs", "dragons"]
+  }
+}

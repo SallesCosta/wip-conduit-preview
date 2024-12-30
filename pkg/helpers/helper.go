@@ -1,14 +1,11 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/go-chi/jwtauth"
 	"github.com/sallescosta/conduit-api/pkg/entity"
 	"net/http"
 )
-
-//interface Helpers = {
-//
-//}
 
 func Contain(IdsSlice []entity.ID, id entity.ID) bool {
 	for _, followedID := range IdsSlice {
@@ -19,9 +16,18 @@ func Contain(IdsSlice []entity.ID, id entity.ID) bool {
 	return false
 }
 
-func GetMyOwnIdbyToken(r *http.Request) string {
+func GetMyOwnIdbyToken(r *http.Request) (string, error) {
 	token := r.Context()
 
-	_, claims, _ := jwtauth.FromContext(token)
-	return claims["sub"].(string)
+	_, claims, err := jwtauth.FromContext(token)
+	if err != nil {
+		return "", err
+	}
+
+	sub, ok := claims["sub"].(string)
+	if !ok {
+		return "", fmt.Errorf("token claims do not contain 'sub'")
+	}
+
+	return sub, nil
 }

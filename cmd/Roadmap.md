@@ -6,11 +6,11 @@
 [x] Update user
 [x] Get Profile
 [x] Follow User
-[] Unfollow User
+[x] Unfollow User
+[] Create Article
 [] List Articles
 [] Feed Articles
 [] Get Article
-[] Create Article
 [] Update Article
 [] Delete Article
 [] Add Comments to an Article

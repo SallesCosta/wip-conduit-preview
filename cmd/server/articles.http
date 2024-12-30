@@ -1,0 +1,6 @@
+@baseUrl = http://localhost:8080/api
+@title = "primeiro titulo"
+@description = "some cool description"
+@body = "textao de body"
+
+// TODO
