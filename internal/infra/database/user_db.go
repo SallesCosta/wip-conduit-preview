@@ -40,7 +40,6 @@ func CreateUsersTable(db *sql.DB) error {
 		log.Fatal(err)
 		return err
 	}
-	fmt.Println("created users table")
 	return nil
 }
 

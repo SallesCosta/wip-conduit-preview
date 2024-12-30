@@ -48,6 +48,8 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Use(jwtauth.Authenticator)
 
 		r.Post("/", articleHandler.CreateArticle)
+		r.Get("/", articleHandler.ListAllArticle)
+
 		//r.Get("/", handlers.GetArticles)
 		//r.Get("/feed", handlers.GetArticlesFeed)
 		//r.Get("/{slug}", handlers.GenericHandler)

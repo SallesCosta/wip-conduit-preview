@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
@@ -68,8 +69,26 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	successResponse := fmt.Sprintf("Article created successfully, id: %s", art.ID)
+
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Article created successfully"))
+	w.Write([]byte(successResponse))
+}
+
+func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) {
+	articles, err := a.ArticleDB.ListAllArticles()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	err = json.NewEncoder(w).Encode(articles)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 //func GetArticles(w http.ResponseWriter, r *http.Request) {

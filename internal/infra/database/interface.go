@@ -18,4 +18,5 @@ type UserInterface interface {
 
 type ArticleInterface interface {
 	CreateArticle(article *articleEntity.Article) error
+	ListAllArticles() ([]articleEntity.Article, error)
 }

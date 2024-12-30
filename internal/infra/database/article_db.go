@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	entity "github.com/sallescosta/conduit-api/internal/entity/article"
+	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 )
 
 func CreateArticlesTable(db *sql.DB) error {
@@ -29,7 +29,6 @@ func CreateArticlesTable(db *sql.DB) error {
 		log.Fatal(err)
 		return err
 	}
-	fmt.Println("created articles table")
 	return nil
 }
 
@@ -41,7 +40,7 @@ func NewArticle(db *sql.DB) *Article {
 	return &Article{DB: db}
 }
 
-func (a *Article) CreateArticle(article *entity.Article) error {
+func (a *Article) CreateArticle(article *articleEntity.Article) error {
 	var existingTitle string
 
 	err := a.DB.QueryRow("SELECT title FROM articles WHERE title = $1", article.Title).Scan(&existingTitle)
@@ -74,7 +73,26 @@ func (a *Article) CreateArticle(article *entity.Article) error {
 	if err != nil {
 		return fmt.Errorf("error inserting article: %w", err)
 	}
-
-	fmt.Println("created article in db: ", article.ID)
 	return nil
+}
+
+func (a *Article) GetAllArticles() ([]articleEntity.Article, error) {
+	rows, err := a.DB.Query("SELECT id, author_id, slug, title, description, body, createdAt, updatedAt FROM articles")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var articles []articleEntity.Article
+ 
+	for rows.Next() {
+		var article articleEntity.Article
+		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description, &article.Body, &article.CreatedAt, &article.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+  
+		articles = append(articles, article)
+	}
+	return articles, nil
 }
