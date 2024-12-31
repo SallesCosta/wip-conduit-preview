@@ -13,7 +13,6 @@ import (
 )
 
 func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
-
 	userHandler := handlers.NewUserHandler(database.NewUser(db))
 	articleHandler := handlers.NewArticleHandler(database.NewArticle(db))
 

@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"log"
 	"log/slog"
 	"net/http"
+
+	"github.com/sallescosta/conduit-api/internal/infra/database"
 
 	"github.com/go-chi/chi/v5"
 	_ "github.com/lib/pq"
