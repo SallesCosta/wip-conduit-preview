@@ -17,6 +17,7 @@ import (
 
 func main() {
 	config, err := configs.LoadConfig()
+
 	if err != nil {
 		panic(err)
 	}
@@ -29,6 +30,7 @@ func main() {
 	)
 
 	db, err := sql.Open("postgres", connStr)
+
 	if err != nil {
 		slog.Error("Error opening database connection", slog.String("error", err.Error()))
 	}

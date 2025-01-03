@@ -24,7 +24,7 @@ type Conf struct {
 }
 
 func LoadConfig() (*Conf, error) {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("cmd/server/.env"); err != nil {
 		panic(err)
 	}
 
