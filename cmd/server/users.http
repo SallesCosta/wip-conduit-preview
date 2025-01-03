@@ -77,14 +77,24 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "title": "Yeah.. to train your dragon",
+    "title": "Neah.. to train your dragojjjjn",
     "description": "Ever wonder how?",
     "body": "You have to believe",
-    "tagList": ["reactjs", "angularjs", "dragons"]
+    "tag_list": ["reactjs", "angularjs", "dragons"]
   }
 }
 
 ### Get all articles
 GET {{baseUrl}}/articles HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Feed articles
+
+@limit = 10
+@offset = 0
+
+### Feed articles
+GET {{baseUrl}}/articles/feed?limit={{limit}}&offset={{offset}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}

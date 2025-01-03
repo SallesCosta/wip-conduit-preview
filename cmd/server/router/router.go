@@ -48,6 +48,7 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 
 		r.Post("/", articleHandler.CreateArticle)
 		r.Get("/", articleHandler.ListAllArticle)
+		r.Get("/feed", articleHandler.FeedArticles)
 
 		//r.Get("/", handlers.GetArticles)
 		//r.Get("/feed", handlers.GetArticlesFeed)
