@@ -19,4 +19,5 @@ type UserInterface interface {
 type ArticleInterface interface {
 	CreateArticle(article *articleEntity.Article) error
 	ListAllArticles() ([]articleEntity.Article, error)
+	FeedArticles(limit, offset int, sort string) ([]articleEntity.Article, error)
 }

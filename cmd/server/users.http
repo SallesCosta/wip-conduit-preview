@@ -77,7 +77,7 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "title": "New Title 4",
+    "title": "3ej Tjtle 9",
     "description": "Ever wonder how?",
     "body": "You have to believe",
     "tag_list": ["aff", "node", "dragons"]

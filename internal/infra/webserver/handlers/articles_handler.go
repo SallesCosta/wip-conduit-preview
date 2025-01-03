@@ -116,10 +116,15 @@ func (a *ArticleHandler) FeedArticles(w http.ResponseWriter, r *http.Request) {
 		sort = "asc"
 	}
 
-	params := fmt.Sprintf("limit: %s,\n offset: %s", limitInt, offsetInt)
+	feed, err := a.ArticleDB.FeedArticles(limitInt, offsetInt, sort)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 
 	w.Write([]byte("feedArticles.."))
-	w.Write([]byte(params))
+	err = json.NewEncoder(w).Encode(feed)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 //

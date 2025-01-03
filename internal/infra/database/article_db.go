@@ -110,26 +110,36 @@ func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
 }
 
 func (a *ArticleDB) FeedArticles(limit, offset int, sort string) ([]articleEntity.Article, error) {
-	if sort != "asc" || sort != "esc" {
+	if sort != "asc" && sort != "desc" {
 		sort = "asc"
 	}
 
-	query := `SELECT id, slug, title, description, body, favorited, favorited_count, tag_list, created_at, updated_at,
- author_id FROM articles`
+	query := fmt.Sprintf(`SELECT id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt FROM articles ORDER BY createdAt %s LIMIT $1 OFFSET $2`, sort)
 
 	rows, err := a.DB.Query(query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var feedArticles []articleEntity.Article
+
 	for rows.Next() {
 		var article articleEntity.Article
-		rows.Scan(&article.ID, &article.Slug, &article.Title, &article.Description, &article.Body, &article.Favorited,
-			&article.FavoritesCount, &article.TagList, &article.CreatedAt, &article.UpdatedAt)
+
+		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
+			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
+		if err != nil {
+			fmt.Println("erro no scan", err)
+			return nil, err
+		}
+
 		feedArticles = append(feedArticles, article)
 	}
 
-	return feedArticles, nil
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
 
+	return feedArticles, nil
 }
