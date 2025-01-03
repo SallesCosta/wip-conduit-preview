@@ -43,7 +43,14 @@ func NewArticle(db *sql.DB) *ArticleDB {
 }
 
 func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
-	fmt.Println("tagList", article.TagList)
+	var exists bool
+	err := a.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM articles WHERE title = $1)", article.Title).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("error checking title existence: %w", err)
+	}
+	if exists {
+		return fmt.Errorf("title already used")
+	}
 
 	stmt, err := a.DB.Prepare(`
 		INSERT INTO articles (
@@ -75,8 +82,7 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 }
 
 func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
-	rows, err := a.DB.Query("SELECT id, author_id, slug, title, description, body, tag_list, createdAt, " +
-		"updatedAt FROM articles")
+	rows, err := a.DB.Query("SELECT id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt FROM articles")
 	if err != nil {
 		return nil, err
 	}
@@ -86,14 +92,20 @@ func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
 
 	for rows.Next() {
 		var article articleEntity.Article
+
 		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
-			&article.Body, &article.TagList, &article.CreatedAt, &article.UpdatedAt)
+			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
 
 		articles = append(articles, article)
 	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return articles, nil
 }
 

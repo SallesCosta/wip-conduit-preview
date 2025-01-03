@@ -25,7 +25,6 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&article)
 	if err != nil {
-		fmt.Println("-->>ENTOU no ERRO<--")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -72,7 +71,7 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	successResponse := fmt.Sprintf("ArticleDB created successfully, id: %s", art.ID)
+	successResponse := fmt.Sprintf("ArticleDB created successfully, title: %s", art.Title)
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(successResponse))
 }
