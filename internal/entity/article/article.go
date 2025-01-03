@@ -20,6 +20,11 @@ type Article struct {
 	AuthorID       string    `gorm:"embedded;embeddedPrefix:author_"`
 }
 
+type AllArticlesOutput struct {
+	Articles      []Article `json:"articles"`
+	ArticlesCount int       `json:"articlesCount"`
+}
+
 func NewArticle(
 	authorId,
 	title,

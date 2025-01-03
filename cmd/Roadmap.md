@@ -8,7 +8,7 @@
 [x] Follow User
 [x] Unfollow User
 [x] Create Article
-[] List Articles
+[x] List Articles
 [] Feed Articles
 [] Get Article
 [] Update Article

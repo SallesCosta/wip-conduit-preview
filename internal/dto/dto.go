@@ -47,15 +47,6 @@ type AuthenticationOutput struct {
 	Image    string `json:"image"`
 }
 
-//type ProfileDTO struct {
-//	Profile struct {
-//		UserName  string `json:"user_name"`
-//		Bio       string `json:"bio"`
-//		Image     string `json:"image"`
-//		Following bool   `json:"following"`
-//	} `json:"profile"`
-//}
-
 type Profile struct {
 	UserName  string `json:"user_name"`
 	Bio       string `json:"bio"`
@@ -94,11 +85,6 @@ type AuthorOutput struct {
 	Bio       string `json:"bio"`
 	Image     string `json:"image"`
 	Following bool   `json:"following"`
-}
-
-type AllArticlesOutput struct {
-	Articles      []ArticleOutput `json:"articles"`
-	ArticlesCount int             `json:"articlesCount"`
 }
 
 type Comment struct {

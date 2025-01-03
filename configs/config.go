@@ -1,10 +1,11 @@
 package configs
 
 import (
-	"github.com/go-chi/jwtauth"
-	"github.com/joho/godotenv"
 	"log"
 	"strconv"
+
+	"github.com/go-chi/jwtauth"
+	"github.com/joho/godotenv"
 
 	"os"
 )
