@@ -9,8 +9,8 @@
 [x] Unfollow User
 [x] Create Article
 [x] List Articles
-[] Feed Articles
-[] Get Article
+[x] Feed Articles
+[x] Get Article by slug
 [] Update Article
 [] Delete Article
 [] Add Comments to an Article

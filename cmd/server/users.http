@@ -32,17 +32,15 @@ Content-Type: application/json
 }
 
 ###
-
+#if RestClient from VSCode
 #@token = {{jwt_login.response.body.access_token}}
 
 ### Get All Users
 GET {{baseUrl}}/user/all
-Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Get Current User
 GET {{baseUrl}}/user HTTP/1.1
-Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Edit an user
@@ -86,7 +84,6 @@ Authorization: Bearer {{token}}
 
 ### Get all articles
 GET {{baseUrl}}/articles HTTP/1.1
-Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Feed articles
@@ -96,5 +93,30 @@ Authorization: Bearer {{token}}
 
 ### Feed articles
 GET {{baseUrl}}/articles/feed?limit={{limit}}&offset={{offset}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+
+#@slug = 3ew-title-9
+#@slug = new-title-2
+#@slug = new-title-9
+@slug = 3ej-tjtle-9
+
+### Get Article by slug
+GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Update Article by slug
+PUT {{baseUrl}}/articles/{{slug}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+{
+  "article": {
+    "slug": "slug de teste",
+    "body": "novo body",
+    "title": "my brand new title"
+  }
+}
+
+###

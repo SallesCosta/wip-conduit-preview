@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
 	"github.com/sallescosta/conduit-api/pkg/entity"
@@ -20,4 +21,6 @@ type ArticleInterface interface {
 	CreateArticle(article *articleEntity.Article) error
 	ListAllArticles() ([]articleEntity.Article, error)
 	FeedArticles(limit, offset int, sort string) ([]articleEntity.Article, error)
+	GetArticleBySlug(slug string) (*articleEntity.Article, error)
+	UpdateArticle(slug string, article dto.ArticleUpdateInput) (*articleEntity.Article, error)
 }

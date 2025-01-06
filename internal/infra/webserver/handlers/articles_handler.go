@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
@@ -120,22 +121,54 @@ func (a *ArticleHandler) FeedArticles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	w.Write([]byte("feedArticles.."))
 	err = json.NewEncoder(w).Encode(feed)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
-//
-//func GetArticlesFeed(w http.ResponseWriter, r *http.Request) {
-//	url := r.URL.String()
-//	limit := r.URL.Query().Get("limit")
-//	offset := r.URL.Query().Get("offset")
-//
-//	params := fmt.Sprintf("limit: %s,\n offset: %s", limit, offset)
-//	response := fmt.Sprintf("url: %s - GetArticlesFeed", url)
-//
-//	w.Write([]byte(response))
-//	w.Write([]byte(params))
-//}
+func (a *ArticleHandler) GetArticle(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+
+	article, err := a.ArticleDB.GetArticleBySlug(slug)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	err = json.NewEncoder(w).Encode(article)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func (a *ArticleHandler) UpdateArticle(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+
+	var modif dto.ArticleUpdateInput
+
+	err := json.NewDecoder(r.Body).Decode(&modif)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if modif.Article.Title == "" && modif.Article.Description == "" && modif.Article.Body == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		//w.Write([]byte("At least one of title, description, or body must be provided"))
+		//TODO: find an other way to handle errors..
+		return
+	}
+
+	updatedArticle, err := a.ArticleDB.UpdateArticle(slug, modif)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	err = json.NewEncoder(w).Encode(updatedArticle)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}

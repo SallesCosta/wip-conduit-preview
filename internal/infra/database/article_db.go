@@ -3,7 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	slugMaker "github.com/gosimple/slug"
 	"github.com/lib/pq"
+	"github.com/sallescosta/conduit-api/internal/dto"
 	"log"
 
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
@@ -142,4 +144,57 @@ func (a *ArticleDB) FeedArticles(limit, offset int, sort string) ([]articleEntit
 	}
 
 	return feedArticles, nil
+}
+
+func (a *ArticleDB) GetArticleBySlug(slug string) (*articleEntity.Article, error) {
+	query := "SELECT id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt FROM articles WHERE slug = $1"
+	stmt, err := a.DB.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	article := &articleEntity.Article{}
+
+	err = stmt.QueryRow(slug).Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
+		&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return article, nil
+}
+
+func (a *ArticleDB) UpdateArticle(slug string, article dto.ArticleUpdateInput) (*articleEntity.Article, error) {
+	articleToUpdate, err := a.GetArticleBySlug(slug)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if article.Article.Title != "" {
+		articleToUpdate.Title = article.Article.Title
+		articleToUpdate.Slug = slugMaker.Make(article.Article.Title)
+	}
+
+	if article.Article.Description != "" {
+		articleToUpdate.Description = article.Article.Description
+	}
+
+	if article.Article.Body != "" {
+		articleToUpdate.Body = article.Article.Body
+	}
+
+	stmt, err := a.DB.Prepare("UPDATE articles SET title = $1, description = $2, body = $3 WHERE slug = $4")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(articleToUpdate.Title, articleToUpdate.Description, articleToUpdate.Body, slug)
+	if err != nil {
+		return nil, err
+	}
+
+	return articleToUpdate, nil
 }

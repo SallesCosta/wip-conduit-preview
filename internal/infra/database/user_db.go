@@ -165,7 +165,6 @@ func (u *User) GetAllUsers() ([]userEntity.User, error) {
 }
 
 func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
-	fmt.Println("DB => userName1 ->>", userName)
 	query := "SELECT id, bio, image FROM users WHERE username = $1"
 	stmt, err := u.DB.Prepare(query)
 
@@ -176,8 +175,6 @@ func (u *User) GetProfileDb(userName string) (*ProfileWithId, error) {
 	defer stmt.Close()
 
 	var profile ProfileWithId
-
-	//userName = strings.Trim(userName, "\"")
 
 	err = stmt.QueryRow(userName).Scan(&profile.Profile.ID, &profile.Profile.Bio, &profile.Profile.Image)
 
