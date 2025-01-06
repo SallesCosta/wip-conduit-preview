@@ -34,7 +34,10 @@ type UpdateArticleInput struct {
 }
 
 type AddCommentInput struct {
-	Body string `json:"body"`
+	Comment struct {
+		Body      string `json:"body"`
+		ArticleID string `json:"article_id"`
+	} `json:"comment"`
 }
 
 // ##############  outputs ##############

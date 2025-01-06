@@ -15,6 +15,7 @@ import (
 func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 	userHandler := handlers.NewUserHandler(database.NewUser(db))
 	articleHandler := handlers.NewArticleHandler(database.NewArticle(db))
+	commentHandler := handlers.NewCommentHandler(database.NewComment(db))
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -54,6 +55,8 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Get("/{slug}", articleHandler.GetArticle)
 		r.Put("/{slug}", articleHandler.UpdateArticle)
 		r.Delete("/{slug}", articleHandler.DeleteArticle)
+
+		r.Post("/{slug}/comments", commentHandler.CreateComment)
 
 		//r.Get("/", handlers.GetArticles)
 		//r.Get("/feed", handlers.GetArticlesFeed)

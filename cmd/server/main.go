@@ -42,6 +42,7 @@ func main() {
 		fmt.Println("Successfully connected to the database!")
 		database.CreateUsersTable(db)
 		database.CreateArticlesTable(db)
+		database.CreateCommentsTable(db)
 	}
 
 	defer db.Close()
