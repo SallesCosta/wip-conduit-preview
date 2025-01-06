@@ -23,4 +23,5 @@ type ArticleInterface interface {
 	FeedArticles(limit, offset int, sort string) ([]articleEntity.Article, error)
 	GetArticleBySlug(slug string) (*articleEntity.Article, error)
 	UpdateArticle(slug string, article dto.ArticleUpdateInput) (*articleEntity.Article, error)
+	DeleteArticleDB(slug string) error
 }

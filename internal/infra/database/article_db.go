@@ -198,3 +198,20 @@ func (a *ArticleDB) UpdateArticle(slug string, article dto.ArticleUpdateInput) (
 
 	return articleToUpdate, nil
 }
+
+func (a *ArticleDB) DeleteArticleDB(slug string) error {
+	article, err := a.GetArticleBySlug(slug)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("article not found")
+		}
+		return fmt.Errorf("error checking article existence: %w", err)
+	}
+
+	query := "DELETE FROM articles WHERE slug = $1"
+	_, err = a.DB.Exec(query, article.Slug)
+	if err != nil {
+		return fmt.Errorf("error deleting article: %w", err)
+	}
+	return nil
+}

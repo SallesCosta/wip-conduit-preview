@@ -172,3 +172,16 @@ func (a *ArticleHandler) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
+
+func (a *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+
+	err := a.ArticleDB.DeleteArticleDB(slug)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+ 
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Article deleted"))
+}

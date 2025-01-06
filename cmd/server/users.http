@@ -99,8 +99,7 @@ Authorization: Bearer {{token}}
 
 #@slug = 3ew-title-9
 #@slug = new-title-2
-#@slug = new-title-9
-@slug = 3ej-tjtle-9
+@slug = new-title-9
 
 ### Get Article by slug
 GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
@@ -119,4 +118,6 @@ Authorization: Bearer {{token}}
   }
 }
 
-###
+### Delete Article by slug
+DELETE {{baseUrl}}/articles/{{slug}} HTTP/1.1
+Authorization: Bearer {{token}}

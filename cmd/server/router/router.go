@@ -53,6 +53,7 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 
 		r.Get("/{slug}", articleHandler.GetArticle)
 		r.Put("/{slug}", articleHandler.UpdateArticle)
+		r.Delete("/{slug}", articleHandler.DeleteArticle)
 
 		//r.Get("/", handlers.GetArticles)
 		//r.Get("/feed", handlers.GetArticlesFeed)

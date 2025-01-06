@@ -11,7 +11,7 @@
 [x] List Articles
 [x] Feed Articles
 [x] Get Article by slug
-[] Update Article
+[x] Update Article
 [] Delete Article
 [] Add Comments to an Article
 [] Get Comments from an Article
