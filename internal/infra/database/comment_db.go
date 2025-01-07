@@ -42,6 +42,8 @@ func (c *CommentDB) CreateCommentDb(comment *entityComment.Comment) error {
 	}
 
 	defer stmt.Close()
+	fmt.Println("DB-authorID", comment.AuthorID)
+	fmt.Println("DB-AAAArticleID", comment.ArticleID)
 
 	_, err = stmt.Exec(comment.ID, comment.Body, comment.AuthorID, comment.ArticleID, comment.CreatedAt, comment.UpdatedAt)
 
@@ -52,7 +54,7 @@ func (c *CommentDB) CreateCommentDb(comment *entityComment.Comment) error {
 	return nil
 }
 
-func (c *CommentDB) GetComments(slug string) (*entityComment.AllCommentsFromAnArticle, error) {
+func (c *CommentDB) GetCommentsDb(slug string) (*entityComment.AllCommentsFromAnArticle, error) {
 	articleDB := NewArticle(c.DB)
 	article, err := articleDB.GetArticleBySlug(slug)
 
@@ -86,4 +88,15 @@ func (c *CommentDB) GetComments(slug string) (*entityComment.AllCommentsFromAnAr
 		commentsList.Comments = []entityComment.Comment{}
 	}
 	return &commentsList, nil
+}
+
+func (c *CommentDB) DeleteCommentsDb(id string) error {
+
+	query := "DELETE FROM comments WHERE id = $1"
+	_, err := c.DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("error deleting comment: %w", err)
+	}
+
+	return nil
 }

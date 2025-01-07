@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	entityComment "github.com/sallescosta/conduit-api/internal/entity/comment"
@@ -35,7 +36,8 @@ func (c *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	articleId := comment.Comment.ArticleID
-
+	fmt.Println("authorID", authorId)
+	fmt.Println("AAAArticleID", articleId)
 	newComment := entityComment.NewComment(
 		comment.Comment.Body,
 		authorId,
@@ -59,7 +61,7 @@ func (c *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 func (c *CommentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 
-	commentsList, err := c.CommentDB.GetComments(slug)
+	commentsList, err := c.CommentDB.GetCommentsDb(slug)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -69,4 +71,17 @@ func (c *CommentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	json.NewEncoder(w).Encode(commentsList)
+}
+
+func (c *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	err := c.CommentDB.DeleteCommentsDb(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("comment removed."))
 }
