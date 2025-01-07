@@ -62,7 +62,7 @@ func (c *CommentDB) GetCommentsDb(slug string) (*entityComment.AllCommentsFromAn
 		return nil, fmt.Errorf("error getting article by slug: %w", err)
 	}
 
-	commentsQuery := `SELECT id, body, author_id, createdAt, updatedAt FROM comments WHERE article_id = $1`
+	commentsQuery := `SELECT id, body, author_id, article_id, createdAt, updatedAt FROM comments WHERE article_id = $1`
 	rows, err := c.DB.Query(commentsQuery, article.ID)
 	if err != nil {
 		return nil, fmt.Errorf("error querying comments: %w", err)
@@ -73,7 +73,7 @@ func (c *CommentDB) GetCommentsDb(slug string) (*entityComment.AllCommentsFromAn
 
 	for rows.Next() {
 		var comment entityComment.Comment
-		err := rows.Scan(&comment.ID, &comment.Body, &comment.AuthorID, &comment.CreatedAt, &comment.UpdatedAt)
+		err := rows.Scan(&comment.ID, &comment.Body, &comment.AuthorID, &comment.ArticleID, &comment.CreatedAt, &comment.UpdatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning comment: %w", err)
 		}
@@ -87,6 +87,7 @@ func (c *CommentDB) GetCommentsDb(slug string) (*entityComment.AllCommentsFromAn
 	if len(commentsList.Comments) == 0 {
 		commentsList.Comments = []entityComment.Comment{}
 	}
+
 	return &commentsList, nil
 }
 

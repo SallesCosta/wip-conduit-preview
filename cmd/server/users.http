@@ -100,7 +100,7 @@ Authorization: Bearer {{token}}
 #@slug = new-title-2
 #@slug = new-title-9
 @articleId = "ce58f193-38f6-4a47-be8a-d452333a928a"
-@commentId = fcce1df9-55b2-4841-9e1a-fca5860049bd
+@commentId = ede73c8c-4f94-45b8-8605-9d3e1d0555c7
 
 ### Get Article by slug
 GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
