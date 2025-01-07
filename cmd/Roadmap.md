@@ -13,7 +13,7 @@
 [x] Get Article by slug
 [x] Update Article
 [x] Delete Article
-[] Add Comments to an Article
+[x] Add Comments to an Article
 [] Get Comments from an Article
 [] Delete Comment
 [] Favorite Article

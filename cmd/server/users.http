@@ -4,7 +4,6 @@
 @password = "aff"
 @userToFollow = Danilo
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzY2MzM5NTYsInN1YiI6IjIyNGZjMmIzLWFlOGMtNDQyMS05ZmEwLTcyY2FkNWVkYjA4OCJ9.VegA_9j5ENBz-gGwoj5E8a-R7QNo37I2gnp9qMgLRaU
-@articleId = ce58f193-38f6-4a47-be8a-d452333a928a
 
 ### Create a new user
 POST {{baseUrl}}/users HTTP/1.1
@@ -97,9 +96,10 @@ Authorization: Bearer {{token}}
 
 ###
 
-@slug = 3ew-title-9
+#@slug = 3ej-title-9
 #@slug = new-title-2
 #@slug = new-title-9
+@articleId = "ce58f193-38f6-4a47-be8a-d452333a928a"
 
 ### Get Article by slug
 GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
@@ -124,13 +124,16 @@ Authorization: Bearer {{token}}
 
 ### Add a Comment
 POST {{baseUrl}}/articles/{{slug}}/comments HTTP/1.1
+Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
   "comment": {
-    "body": "add first comment",
+    "body": "add 1 comments",
     "article_id": {{articleId}}
   }
 }
 
-###
+### Get Comments from an article
+GET {{baseUrl}}/articles/{{slug}}/comments HTTP/1.1
+Authorization: Bearer {{token}}

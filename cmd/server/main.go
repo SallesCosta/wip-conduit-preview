@@ -37,7 +37,7 @@ func main() {
 
 	err = db.Ping()
 	if err != nil {
-		slog.Info("Verify the docker. Open the docker and run `docker-compose up -d`")
+		slog.Error("Verify the docker. Open the docker and run `docker-compose up -d`")
 	} else {
 		fmt.Println("Successfully connected to the database!")
 		database.CreateUsersTable(db)

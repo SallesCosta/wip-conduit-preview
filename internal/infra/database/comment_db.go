@@ -51,3 +51,39 @@ func (c *CommentDB) CreateCommentDb(comment *entityComment.Comment) error {
 
 	return nil
 }
+
+func (c *CommentDB) GetComments(slug string) (*entityComment.AllCommentsFromAnArticle, error) {
+	articleDB := NewArticle(c.DB)
+	article, err := articleDB.GetArticleBySlug(slug)
+
+	if err != nil {
+		return nil, fmt.Errorf("error getting article by slug: %w", err)
+	}
+
+	commentsQuery := `SELECT id, body, author_id, createdAt, updatedAt FROM comments WHERE article_id = $1`
+	rows, err := c.DB.Query(commentsQuery, article.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error querying comments: %w", err)
+	}
+	defer rows.Close()
+
+	var commentsList entityComment.AllCommentsFromAnArticle
+
+	for rows.Next() {
+		var comment entityComment.Comment
+		err := rows.Scan(&comment.ID, &comment.Body, &comment.AuthorID, &comment.CreatedAt, &comment.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning comment: %w", err)
+		}
+		commentsList.Comments = append(commentsList.Comments, comment)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over comment rows: %w", err)
+	}
+
+	if len(commentsList.Comments) == 0 {
+		commentsList.Comments = []entityComment.Comment{}
+	}
+	return &commentsList, nil
+}

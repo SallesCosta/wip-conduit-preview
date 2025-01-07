@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"github.com/sallescosta/conduit-api/internal/dto"
-	commentEntity "github.com/sallescosta/conduit-api/internal/entity/comment"
+	entityComment "github.com/sallescosta/conduit-api/internal/entity/comment"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"github.com/sallescosta/conduit-api/pkg/helpers"
 	"net/http"
@@ -35,7 +36,7 @@ func (c *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	articleId := comment.Comment.ArticleID
 
-	newComment := commentEntity.NewComment(
+	newComment := entityComment.NewComment(
 		comment.Comment.Body,
 		authorId,
 		articleId,
@@ -53,4 +54,19 @@ func (c *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func (c *CommentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+
+	commentsList, err := c.CommentDB.GetComments(slug)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(commentsList)
 }

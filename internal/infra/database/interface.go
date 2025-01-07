@@ -29,4 +29,5 @@ type ArticleInterface interface {
 
 type CommentInterface interface {
 	CreateCommentDb(comment *entityComment.Comment) error
+	GetComments(slug string) (*entityComment.AllCommentsFromAnArticle, error)
 }

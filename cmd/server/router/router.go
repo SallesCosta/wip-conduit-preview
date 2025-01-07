@@ -57,6 +57,7 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Delete("/{slug}", articleHandler.DeleteArticle)
 
 		r.Post("/{slug}/comments", commentHandler.CreateComment)
+		r.Get("/{slug}/comments", commentHandler.GetComments)
 
 		//r.Get("/", handlers.GetArticles)
 		//r.Get("/feed", handlers.GetArticlesFeed)
