@@ -42,7 +42,7 @@ func RemoveItem[T comparable](s []T, x T) []T {
 	return result
 }
 
-func Ternary[T any](val bool, x, y T) T {
+func Ternary(val bool, x, y interface{}) interface{} {
 	if val {
 		return x
 	}
