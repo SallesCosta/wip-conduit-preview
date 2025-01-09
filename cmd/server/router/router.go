@@ -64,5 +64,4 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Delete("/{slug}/comments/{id}", commentHandler.DeleteComment)
 	})
 
-	//r.Get("/api/tags", handlers.GenericHandler)
 }

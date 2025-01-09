@@ -287,7 +287,7 @@ func (h *UserHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) FavoriteArticle(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "slug")
 	isAddToFavorite := r.Method == http.MethodPost
- 
+
 	id, err := helpers.GetMyOwnIdbyToken(r)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -298,7 +298,7 @@ func (h *UserHandler) FavoriteArticle(w http.ResponseWriter, r *http.Request) {
 	err = h.UserDB.FavoriteArticleDB(slug, isAddToFavorite, id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("--->>Error: %v", err)))
+		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
 		return
 	}
 
@@ -306,11 +306,7 @@ func (h *UserHandler) FavoriteArticle(w http.ResponseWriter, r *http.Request) {
 	addMessage := "Article added to favorites"
 	removedMessage := "Article removed from favorites"
 
-	var message string
-	if isAddToFavorite {
-		message = addMessage
-	} else {
-		message = removedMessage
-	}
+	message := helpers.Ternary(isAddToFavorite, addMessage, removedMessage)
+
 	w.Write([]byte(message))
 }

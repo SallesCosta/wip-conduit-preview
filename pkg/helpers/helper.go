@@ -41,3 +41,10 @@ func RemoveItem[T comparable](s []T, x T) []T {
 	}
 	return result
 }
+
+func Ternary[T any](val bool, x, y T) T {
+	if val {
+		return x
+	}
+	return y
+}
