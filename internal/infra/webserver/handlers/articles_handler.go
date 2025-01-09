@@ -80,8 +80,14 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) {
 	articles, err := a.ArticleDB.ListAllArticles()
 	if err != nil {
+
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
 		return
+	}
+
+	if len(articles) == 0 {
+		articles = []articleEntity.Article{}
 	}
 
 	response := articleEntity.AllArticlesOutput{
@@ -95,6 +101,8 @@ func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) 
 	err = json.NewEncoder(w).Encode(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
+
 	}
 }
 
@@ -157,8 +165,6 @@ func (a *ArticleHandler) UpdateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	if modif.Article.Title == "" && modif.Article.Description == "" && modif.Article.Body == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		//w.Write([]byte("At least one of title, description, or body must be provided"))
-		//TODO: find an other way to handle errors..
 		return
 	}
 
@@ -185,3 +191,4 @@ func (a *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Article deleted"))
 }
+

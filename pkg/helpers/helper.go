@@ -31,3 +31,13 @@ func GetMyOwnIdbyToken(r *http.Request) (string, error) {
 
 	return sub, nil
 }
+
+func RemoveItem[T comparable](s []T, x T) []T {
+	result := make([]T, 0, len(s))
+	for _, item := range s {
+		if item != x {
+			result = append(result, item)
+		}
+	}
+	return result
+}

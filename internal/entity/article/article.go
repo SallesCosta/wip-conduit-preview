@@ -8,15 +8,15 @@ import (
 
 type Article struct {
 	ID             entity.ID `json:"id"`
-	Slug           string    `json:"slug,omitempty"`
-	Title          string    `json:"title,omitempty"`
-	Description    string    `json:"description,omitempty"`
+	Slug           string    `json:"slug"`
+	Title          string    `json:"title"`
+	Description    string    `json:"description"`
 	Body           string    `json:"body,omitempty"`
-	TagList        []string  `json:"tag_list,omitempty"`
-	Favorited      bool      `json:"favorited,omitempty"`
-	FavoritesCount uint      `json:"favorites_count,omitempty"`
-	CreatedAt      string    `json:"created_at,omitempty"`
-	UpdatedAt      string    `json:"updated_at,omitempty"`
+	TagList        []string  `json:"tag_list"`
+	Favorited      bool      `json:"favorited"`
+	FavoritesCount uint      `json:"favorites_count"`
+	CreatedAt      string    `json:"created_at"`
+	UpdatedAt      string    `json:"updated_at"`
 	AuthorID       string    `gorm:"embedded;embeddedPrefix:author_"`
 }
 

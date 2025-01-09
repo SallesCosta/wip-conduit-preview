@@ -16,6 +16,7 @@ type UserInterface interface {
 	UpdateUserDb(email, username, password, image, bio string) (*userEntity.User, error)
 	GetProfileDb(userName string) (*ProfileWithId, error)
 	UpdateFollowingUserDb(id string, following []entity.ID) error
+	FavoriteArticleDB(slug string, isAddToFavorite bool, userID string) error
 }
 
 type ArticleInterface interface {

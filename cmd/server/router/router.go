@@ -56,19 +56,12 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Put("/{slug}", articleHandler.UpdateArticle)
 		r.Delete("/{slug}", articleHandler.DeleteArticle)
 
+		r.Post("/{slug}/favorite", userHandler.FavoriteArticle)
+		r.Delete("/{slug}/favorite", userHandler.FavoriteArticle)
+
 		r.Post("/{slug}/comments", commentHandler.CreateComment)
 		r.Get("/{slug}/comments", commentHandler.GetComments)
 		r.Delete("/{slug}/comments/{id}", commentHandler.DeleteComment)
-
-		//r.Get("/", handlers.GetArticles)
-		//r.Get("/feed", handlers.GetArticlesFeed)
-		//r.Get("/{slug}", handlers.GenericHandler)
-		//r.Put("/{slug}", handlers.GenericHandler)
-		//r.Delete("/{slug}", handlers.GenericHandler)
-
-		//r.Post("/{slug}/comments", handlers.GenericHandler)
-		//r.Get("/{slug}/comments", handlers.GenericHandler) // authentication optional, return multiple comments
-		//r.Delete("/{slug}/comments/{id}", handlers.GenericHandler)
 	})
 
 	//r.Get("/api/tags", handlers.GenericHandler)

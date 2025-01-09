@@ -6,13 +6,14 @@ import (
 )
 
 type User struct {
-	ID        entity.ID `json:"id"`
-	UserName  string    `json:"username"`
-	Email     string    `json:"email"`
-	Password  string    `json:"-"`
-	Bio       string    `json:"bio"`
-	Image     string    `json:"image"`
-	Following []entity.ID
+	ID        entity.ID   `json:"id"`
+	UserName  string      `json:"username"`
+	Email     string      `json:"email"`
+	Password  string      `json:"-"`
+	Bio       string      `json:"bio"`
+	Image     string      `json:"image"`
+	Following []entity.ID `json:"following"`
+	Favorites []entity.ID `json:"favorites"`
 }
 
 func DoHash(password string) (hash []byte, err error) {
@@ -37,6 +38,7 @@ func NewUser(username, email, password string) (*User, error) {
 		Bio:       "",
 		Image:     "",
 		Following: []entity.ID{},
+		Favorites: []entity.ID{},
 	}, nil
 }
 

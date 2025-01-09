@@ -1,9 +1,9 @@
 @baseUrl = http://localhost:8080/api
-@name = "afnf"
-@email = "hff@email.com"
-@password = "aff"
-@userToFollow = Danilo
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzY2MzM5NTYsInN1YiI6IjIyNGZjMmIzLWFlOGMtNDQyMS05ZmEwLTcyY2FkNWVkYjA4OCJ9.VegA_9j5ENBz-gGwoj5E8a-R7QNo37I2gnp9qMgLRaU
+@name = "Thomas"
+@email = "karol@email.com"
+@password = "thomas"
+@userToFollow = eduardo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0MzYyNDIsInN1YiI6IjMzZTA2ODZlLWYyYjQtNGMxZS04OTcyLWYyNGIxY2MyOTRiMyJ9.2P-VXzD0kuqRwG9U6K4g77vxrdU70W1rU6C_ggpAbF8
 
 ### Create a new user
 POST {{baseUrl}}/users HTTP/1.1
@@ -74,7 +74,7 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "title": "3ej Tjtle 9",
+    "title": "artigo 4",
     "description": "Ever wonder how?",
     "body": "You have to believe",
     "tag_list": ["aff", "node", "dragons"]
@@ -96,15 +96,12 @@ Authorization: Bearer {{token}}
 
 ###
 
-@slug = 3ej-title-9
-#@slug = new-title-2
-#@slug = new-title-9
-@articleId = "ce58f193-38f6-4a47-be8a-d452333a928a"
-@commentId = ede73c8c-4f94-45b8-8605-9d3e1d0555c7
+#@slug = novo-artigo
+@slug = artigo-4
+#@slug = yeah-artigo
+@articleId = "79c0ee1b-d5c4-422c-9aec-f75767edc67c"
+#@commentId = ede73c8c-4f94-45b8-8605-9d3e1d0555c7
 
-### Get Article by slug
-GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
-Authorization: Bearer {{token}}
 
 ### Update Article by slug
 PUT {{baseUrl}}/articles/{{slug}} HTTP/1.1
@@ -113,9 +110,8 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "slug": "slug de teste",
-    "body": "novo body",
-    "title": "my brand new title"
+    "body": "opaa",
+    "title": "new title.. opaaa"
   }
 }
 
@@ -142,3 +138,19 @@ Authorization: Bearer {{token}}
 ### Delete Comments
 DELETE {{baseUrl}}/articles/{{slug}}/comments/{{commentId}} HTTP/1.1
 Authorization: Bearer {{token}}
+
+### Get Article by slug
+GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Add to Favorite
+POST {{baseUrl}}/articles/{{slug}}/favorite HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Remove form Favorite
+DELETE {{baseUrl}}/articles/{{slug}}/favorite HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###

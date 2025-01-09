@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -54,7 +55,7 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userFound != nil {
-		http.Error(w, "User already exists", http.StatusConflict)
+		http.Error(w, "UserDB already exists", http.StatusConflict)
 		return
 	}
 
@@ -178,7 +179,7 @@ func (h *UserHandler) GetProfileUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows in result set") {
-			http.Error(w, "User not found", http.StatusNotFound)
+			http.Error(w, "UserDB not found", http.StatusNotFound)
 			return
 		}
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -281,4 +282,35 @@ func (h *UserHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(profile); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func (h *UserHandler) FavoriteArticle(w http.ResponseWriter, r *http.Request) {
+	slug := chi.URLParam(r, "slug")
+	isAddToFavorite := r.Method == http.MethodPost
+ 
+	id, err := helpers.GetMyOwnIdbyToken(r)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
+
+	err = h.UserDB.FavoriteArticleDB(slug, isAddToFavorite, id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("--->>Error: %v", err)))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	addMessage := "Article added to favorites"
+	removedMessage := "Article removed from favorites"
+
+	var message string
+	if isAddToFavorite {
+		message = addMessage
+	} else {
+		message = removedMessage
+	}
+	w.Write([]byte(message))
 }

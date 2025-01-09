@@ -97,6 +97,7 @@ func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
 
 		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
 			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
+
 		if err != nil {
 			return nil, err
 		}
@@ -185,13 +186,13 @@ func (a *ArticleDB) UpdateArticle(slug string, article dto.ArticleUpdateInput) (
 		articleToUpdate.Body = article.Article.Body
 	}
 
-	stmt, err := a.DB.Prepare("UPDATE articles SET title = $1, description = $2, body = $3 WHERE slug = $4")
+	stmt, err := a.DB.Prepare("UPDATE articles SET title = $1, description = $2, body = $3,  favorited = $4 WHERE slug = $5")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(articleToUpdate.Title, articleToUpdate.Description, articleToUpdate.Body, slug)
+	_, err = stmt.Exec(articleToUpdate.Title, articleToUpdate.Description, articleToUpdate.Body, articleToUpdate.Favorited, slug)
 	if err != nil {
 		return nil, err
 	}
@@ -215,3 +216,45 @@ func (a *ArticleDB) DeleteArticleDB(slug string) error {
 	}
 	return nil
 }
+
+//func (a *ArticleDB) FavoriteArticleDB(slug string, isAddToFavorite bool) error {
+//	articleToFavorite, err := a.GetArticleBySlug(slug)
+//	if err != nil {
+//		fmt.Println("-->erro aqui<--", err)
+//		return err
+//	}
+//
+//	if articleToFavorite.Favorited == isAddToFavorite {
+//		fmt.Println("-->erro A<--", err)
+//		return fmt.Errorf("article already in the desired favorite state")
+//	}
+//
+//	articleToFavorite.Favorited = isAddToFavorite
+//
+//	if isAddToFavorite {
+//		articleToFavorite.FavoritesCount++
+//	} else {
+//		if articleToFavorite.FavoritesCount > 0 {
+//			articleToFavorite.FavoritesCount--
+//		} else {
+//
+//			fmt.Println("-->erro B<--")
+//			return fmt.Errorf("favoritesCount cannot be negative")
+//		}
+//	}
+//
+//	stmt, err := a.DB.Prepare("UPDATE articles SET favorited = $1, favoritesCount = $2 WHERE slug = $3")
+//	if err != nil {
+//		fmt.Println("erro 2 --->", err)
+//		return err
+//	}
+//	defer stmt.Close()
+//
+//	_, err = stmt.Exec(articleToFavorite.Favorited, articleToFavorite.FavoritesCount, slug)
+//	if err != nil {
+//		fmt.Println("erro 3 --->", err)
+//		return err
+//	}
+//
+//	return nil
+//}
