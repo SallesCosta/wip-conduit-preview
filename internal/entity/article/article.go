@@ -2,22 +2,23 @@ package entity
 
 import (
 	"github.com/gosimple/slug"
+	tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"github.com/sallescosta/conduit-api/pkg/entity"
 	"time"
 )
 
 type Article struct {
-	ID             entity.ID `json:"id"`
-	Slug           string    `json:"slug"`
-	Title          string    `json:"title"`
-	Description    string    `json:"description"`
-	Body           string    `json:"body,omitempty"`
-	TagList        []string  `json:"tag_list"`
-	Favorited      bool      `json:"favorited"`
-	FavoritesCount uint      `json:"favorites_count"`
-	CreatedAt      string    `json:"created_at"`
-	UpdatedAt      string    `json:"updated_at"`
-	AuthorID       string    `gorm:"embedded;embeddedPrefix:author_"`
+	ID             entity.ID        `json:"id"`
+	Slug           string           `json:"slug"`
+	Title          string           `json:"title"`
+	Description    string           `json:"description"`
+	Body           string           `json:"body,omitempty"`
+	TagList        []*tagEntity.Tag `json:"tag_list"`
+	Favorited      bool             `json:"favorited"`
+	FavoritesCount uint             `json:"favorites_count"`
+	CreatedAt      string           `json:"created_at"`
+	UpdatedAt      string           `json:"updated_at"`
+	AuthorID       string           `json:"author_id"`
 }
 
 type AllArticlesOutput struct {
@@ -30,7 +31,7 @@ func NewArticle(
 	title,
 	description,
 	body string,
-	tagList []string,
+	tagList []*tagEntity.Tag,
 ) (*Article, error) {
 
 	slug := slug.Make(title)

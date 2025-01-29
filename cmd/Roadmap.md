@@ -16,6 +16,6 @@
 [x] Add Comments to an Article
 [x] Get Comments from an Article
 [x] Delete Comment
-[] Favorite Article
-[] Unfavorite Article
+[x] Favorite Article
+[x] Unfavorite Article
 [] Get Tags

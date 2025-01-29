@@ -13,14 +13,14 @@ import (
 
 func CreateArticlesTable(db *sql.DB) error {
 	query := `
-        CREATE TABLE IF NOT EXISTS articles (
+        CREATE TABLE IF NOT EXISTS Articles (
             id VARCHAR(255) PRIMARY KEY,
             author_id VARCHAR(255) NOT NULL,
             slug VARCHAR(100) UNIQUE NOT NULL,
             title VARCHAR(255) NOT NULL,
             description TEXT,
             body TEXT,
-            tag_list TEXT[],
+--             tag_list TEXT[],
             favorited BOOLEAN DEFAULT FALSE,
             favoritesCount INT DEFAULT 0,
             createdAt TIMESTAMP DEFAULT NOW(),
@@ -33,6 +33,8 @@ func CreateArticlesTable(db *sql.DB) error {
 		log.Fatal(err)
 		return err
 	}
+
+	fmt.Println("Articles table created")
 	return nil
 }
 
@@ -56,8 +58,8 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 
 	stmt, err := a.DB.Prepare(`
 		INSERT INTO articles (
-			id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
+			id, author_id, slug, title, description, body, favorited, favoritesCount, createdAt, updatedAt
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 	`)
 	if err != nil {
 		return fmt.Errorf("error preparing insert statement: %w", err)
@@ -73,13 +75,24 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 		article.Body,
 		article.Favorited,
 		article.FavoritesCount,
-		pq.Array(article.TagList),
+		//pq.Array(article.TagList),
 		article.CreatedAt,
 		article.UpdatedAt,
 	)
 	if err != nil {
 		return fmt.Errorf("error inserting article: %w", err)
 	}
+
+	//for _, t = range article.TagList {
+	//  //var tagID string
+	//  tagStmt, err := a.DB.Prepare(`INSERT INTO Tags (name) VALUES ($1)`)
+	//  if err != nil {
+	//    return fmt.Errorf("error preparing insert statement: %w", err)
+	//  }
+	//  defer stmt.Close()
+	//  _, err = tagStmt.Exec(t.name)
+	//}
+
 	return nil
 }
 

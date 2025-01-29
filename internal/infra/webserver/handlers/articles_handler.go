@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
+	tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"github.com/sallescosta/conduit-api/pkg/helpers"
 	"net/http"
@@ -15,10 +16,11 @@ import (
 
 type ArticleHandler struct {
 	ArticleDB database.ArticleInterface
+	TagDB     database.TagsInterface
 }
 
-func NewArticleHandler(articleDB database.ArticleInterface) *ArticleHandler {
-	return &ArticleHandler{ArticleDB: articleDB}
+func NewArticleHandler(articleDB database.ArticleInterface, tagDB database.TagsInterface) *ArticleHandler {
+	return &ArticleHandler{ArticleDB: articleDB, TagDB: tagDB}
 }
 
 func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
@@ -37,12 +39,37 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//err = a.ArticleDB.CreateTag(article.Article.TagList)
+	//if err != nil {
+	//	if strings.Contains(err.Error(), "error preparing insert statement") {
+	//		w.WriteHeader(http.StatusInternalServerError)
+	//		w.Write([]byte("Error preparing insert statement\n"))
+	//	} else if strings.Contains(err.Error(), "error inserting tag") {
+	//		w.WriteHeader(http.StatusInternalServerError)
+	//		w.Write([]byte("Error inserting tag\n"))
+	//	} else {
+	//		w.WriteHeader(http.StatusInternalServerError)
+	//		w.Write([]byte("Internal Server Error\n"))
+	//	}
+	//	return
+	//}
+
+	var lTag []*tagEntity.Tag
+
+	for _, Itag := range article.Article.TagList {
+		newTage := tagEntity.NewTag(Itag)
+
+		lTag = append(lTag, newTage)
+	}
+
+	err = a.TagDB.CreateTag(lTag)
+
 	art, err := articleEntity.NewArticle(
 		authorId,
 		article.Article.Title,
 		article.Article.Description,
 		article.Article.Body,
-		article.Article.TagList,
+		lTag,
 	)
 
 	if err != nil {
@@ -192,3 +219,6 @@ func (a *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Article deleted"))
 }
 
+//func (a *ArticleHandler) CreateTag(tag []string) error {}
+//
+//func (a *ArticleHandler) ListTags() ([]string, error) {}

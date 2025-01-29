@@ -14,8 +14,9 @@ import (
 
 func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 	userHandler := handlers.NewUserHandler(database.NewUser(db))
-	articleHandler := handlers.NewArticleHandler(database.NewArticle(db))
+	articleHandler := handlers.NewArticleHandler(database.NewArticle(db), database.NewTag(db))
 	commentHandler := handlers.NewCommentHandler(database.NewComment(db))
+	tagHandler := handlers.NewTagHandler(database.NewTag(db))
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -64,4 +65,9 @@ func Init(r *chi.Mux, config *configs.Conf, db *sql.DB) {
 		r.Delete("/{slug}/comments/{id}", commentHandler.DeleteComment)
 	})
 
+	r.Route("/api/tags", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(config.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+		r.Get("/", tagHandler.ListTags)
+	})
 }

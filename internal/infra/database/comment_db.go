@@ -24,6 +24,8 @@ func CreateCommentsTable(db *sql.DB) error {
 		log.Fatal(err)
 		return err
 	}
+
+	fmt.Println("Comments table created")
 	return nil
 }
 
@@ -42,8 +44,6 @@ func (c *CommentDB) CreateCommentDb(comment *entityComment.Comment) error {
 	}
 
 	defer stmt.Close()
-	fmt.Println("DB-authorID", comment.AuthorID)
-	fmt.Println("DB-AAAArticleID", comment.ArticleID)
 
 	_, err = stmt.Exec(comment.ID, comment.Body, comment.AuthorID, comment.ArticleID, comment.CreatedAt, comment.UpdatedAt)
 

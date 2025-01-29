@@ -5,12 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
-	"github.com/sallescosta/conduit-api/pkg/helpers"
 	"log"
 
-	"github.com/sallescosta/conduit-api/pkg/entity"
-
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
+	"github.com/sallescosta/conduit-api/pkg/entity"
+	"github.com/sallescosta/conduit-api/pkg/helpers"
 )
 
 type Error error
@@ -25,7 +24,7 @@ type ProfileWithId struct {
 
 func CreateUsersTable(db *sql.DB) error {
 	query := `
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE IF NOT EXISTS Users (
             id VARCHAR(255) PRIMARY KEY,
             username VARCHAR(50),
             email VARCHAR(50),
@@ -41,6 +40,8 @@ func CreateUsersTable(db *sql.DB) error {
 		log.Fatal(err)
 		return err
 	}
+
+	fmt.Println("Users table created")
 	return nil
 }
 

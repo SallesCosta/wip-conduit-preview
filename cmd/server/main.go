@@ -43,6 +43,8 @@ func main() {
 		database.CreateUsersTable(db)
 		database.CreateArticlesTable(db)
 		database.CreateCommentsTable(db)
+		database.CreateTagsTable(db)
+		database.CreateArticleTagsTable(db)
 	}
 
 	defer db.Close()

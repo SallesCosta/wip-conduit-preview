@@ -308,5 +308,5 @@ func (h *UserHandler) FavoriteArticle(w http.ResponseWriter, r *http.Request) {
 
 	message := helpers.Ternary(isAddToFavorite, addMessage, removedMessage)
 
-	w.Write([]byte(message))
+	w.Write([]byte(fmt.Sprintf("%v", message)))
 }

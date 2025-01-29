@@ -3,7 +3,7 @@
 @email = "karol@email.com"
 @password = "thomas"
 @userToFollow = eduardo
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc0MzYyNDIsInN1YiI6IjMzZTA2ODZlLWYyYjQtNGMxZS04OTcyLWYyNGIxY2MyOTRiMyJ9.2P-VXzD0kuqRwG9U6K4g77vxrdU70W1rU6C_ggpAbF8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzkxNDI5NzgsInN1YiI6IjI2NTlmMjkzLTk0ODMtNDJlNi04ZWNmLTFiY2I1YjQ2ZTI2NyJ9.nhV2w8HmAH3PakQ7ZmIxb_01xFCwZrYuXMX56Q6BWes
 
 ### Create a new user
 POST {{baseUrl}}/users HTTP/1.1
@@ -74,10 +74,10 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "title": "artigo 4",
+    "title": "jjtigo 2",
     "description": "Ever wonder how?",
     "body": "You have to believe",
-    "tag_list": ["aff", "node", "dragons"]
+    "tag_list": ["teste", "node", "golang"]
   }
 }
 

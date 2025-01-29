@@ -4,6 +4,7 @@ import (
 	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 	entityComment "github.com/sallescosta/conduit-api/internal/entity/comment"
+	tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	userEntity "github.com/sallescosta/conduit-api/internal/entity/user"
 	"github.com/sallescosta/conduit-api/pkg/entity"
 )
@@ -32,4 +33,9 @@ type CommentInterface interface {
 	CreateCommentDb(comment *entityComment.Comment) error
 	GetCommentsDb(slug string) (*entityComment.AllCommentsFromAnArticle, error)
 	DeleteCommentsDb(id string) error
+}
+
+type TagsInterface interface {
+	CreateTag(tags []*tagEntity.Tag) error
+	ListTags() ([]*tagEntity.Tag, error)
 }
