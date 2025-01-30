@@ -3,24 +3,25 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
 	slugMaker "github.com/gosimple/slug"
 	"github.com/lib/pq"
 	"github.com/sallescosta/conduit-api/internal/dto"
-	"log"
 
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 )
 
 func CreateArticlesTable(db *sql.DB) error {
 	query := `
-        CREATE TABLE IF NOT EXISTS Articles (
+        CREATE TABLE IF NOT EXISTS articles (
             id VARCHAR(255) PRIMARY KEY,
             author_id VARCHAR(255) NOT NULL,
             slug VARCHAR(100) UNIQUE NOT NULL,
             title VARCHAR(255) NOT NULL,
             description TEXT,
             body TEXT,
---             tag_list TEXT[],
+            tag_list TEXT[],
             favorited BOOLEAN DEFAULT FALSE,
             favoritesCount INT DEFAULT 0,
             createdAt TIMESTAMP DEFAULT NOW(),
@@ -34,7 +35,7 @@ func CreateArticlesTable(db *sql.DB) error {
 		return err
 	}
 
-	fmt.Println("Articles table created")
+	fmt.Println("articles table created")
 	return nil
 }
 
@@ -58,8 +59,8 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 
 	stmt, err := a.DB.Prepare(`
 		INSERT INTO articles (
-			id, author_id, slug, title, description, body, favorited, favoritesCount, createdAt, updatedAt
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
+			id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
 	`)
 	if err != nil {
 		return fmt.Errorf("error preparing insert statement: %w", err)
@@ -75,24 +76,14 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 		article.Body,
 		article.Favorited,
 		article.FavoritesCount,
-		//pq.Array(article.TagList),
+		pq.Array(article.TagList),
 		article.CreatedAt,
 		article.UpdatedAt,
 	)
 	if err != nil {
+		log.Printf("Error inserting article: %v\nArticle: %+v\n", err, article)
 		return fmt.Errorf("error inserting article: %w", err)
 	}
-
-	//for _, t = range article.TagList {
-	//  //var tagID string
-	//  tagStmt, err := a.DB.Prepare(`INSERT INTO Tags (name) VALUES ($1)`)
-	//  if err != nil {
-	//    return fmt.Errorf("error preparing insert statement: %w", err)
-	//  }
-	//  defer stmt.Close()
-	//  _, err = tagStmt.Exec(t.name)
-	//}
-
 	return nil
 }
 
@@ -109,13 +100,39 @@ func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
 		var article articleEntity.Article
 
 		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
-			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
-
+			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt,
+			&article.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
 
-		articles = append(articles, article)
+		// Obter tags associadas ao artigo
+		tagRows, err := a.DB.Query("SELECT tag_id FROM ArticleTags WHERE article_id = $1", article.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		defer tagRows.Close()
+
+		// var tags []*tagEntity.Tag
+		// for tagRows.Next() {
+		// 	var tagID string
+		// 	err := tagRows.Scan(&tagID)
+		// 	if err != nil {
+		// 		return nil, err
+		// 	}
+		//
+		// 	// Obter o nome da tag a partir do ID
+		// 	var tagName string
+		// 	err = a.DB.QueryRow("SELECT name FROM Tags WHERE id = $1", tagID).Scan(&tagName)
+		// 	if err != nil {
+		// 		return nil, err
+		// 	}
+		// 	tags.append(tags, tagName)
+		// }
+
+		// article.TagList = tags
+		// articles = append(articles, article)
 	}
 
 	if err = rows.Err(); err != nil {

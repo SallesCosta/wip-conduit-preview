@@ -3,15 +3,16 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/sallescosta/conduit-api/internal/dto"
 	articleEntity "github.com/sallescosta/conduit-api/internal/entity/article"
 	tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"github.com/sallescosta/conduit-api/pkg/helpers"
-	"net/http"
-	"strconv"
-	"strings"
 )
 
 type ArticleHandler struct {
@@ -39,21 +40,6 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//err = a.ArticleDB.CreateTag(article.Article.TagList)
-	//if err != nil {
-	//	if strings.Contains(err.Error(), "error preparing insert statement") {
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//		w.Write([]byte("Error preparing insert statement\n"))
-	//	} else if strings.Contains(err.Error(), "error inserting tag") {
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//		w.Write([]byte("Error inserting tag\n"))
-	//	} else {
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//		w.Write([]byte("Internal Server Error\n"))
-	//	}
-	//	return
-	//}
-
 	var lTag []*tagEntity.Tag
 
 	for _, Itag := range article.Article.TagList {
@@ -63,13 +49,18 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = a.TagDB.CreateTag(lTag)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error creating tag\n"))
+		return
+	}
 
 	art, err := articleEntity.NewArticle(
 		authorId,
 		article.Article.Title,
 		article.Article.Description,
 		article.Article.Body,
-		lTag,
+		article.Article.TagList,
 	)
 
 	if err != nil {
@@ -83,18 +74,27 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(err.Error(), "title already used") {
 			w.WriteHeader(http.StatusConflict)
 			w.Write([]byte("Title already used\n"))
+
+			return
 		} else if strings.Contains(err.Error(), "error checking title existence") {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Error checking title existence\n"))
+
+			return
 		} else if strings.Contains(err.Error(), "error preparing insert statement") {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Error preparing insert statement\n"))
+
+			return
 		} else if strings.Contains(err.Error(), "error inserting article") {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Error inserting article\n"))
+			return
 		} else {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Internal Server Error\n"))
+
+			return
 		}
 		return
 	}
@@ -107,7 +107,6 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) {
 	articles, err := a.ArticleDB.ListAllArticles()
 	if err != nil {
-
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
 		return
@@ -218,7 +217,3 @@ func (a *ArticleHandler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Article deleted"))
 }
-
-//func (a *ArticleHandler) CreateTag(tag []string) error {}
-//
-//func (a *ArticleHandler) ListTags() ([]string, error) {}

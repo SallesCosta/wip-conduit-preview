@@ -25,7 +25,7 @@ func CreateCommentsTable(db *sql.DB) error {
 		return err
 	}
 
-	fmt.Println("Comments table created")
+	fmt.Println("comments table created")
 	return nil
 }
 
