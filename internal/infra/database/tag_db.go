@@ -78,17 +78,22 @@ func (t *TagDB) CreateTag(tags []*tagEntity.Tag) error {
 }
 
 func (t *TagDB) ListTags() ([]*tagEntity.Tag, error) {
-	rows, err := t.DB.Query("SELECT name FROM tags")
+	rows, err := t.DB.Query("SELECT id, name FROM tags")
 	if err != nil {
+		fmt.Errorf("error querying tags: %v", err)
 		return nil, err
 	}
+
+	defer rows.Close()
 
 	var tags []*tagEntity.Tag
 
 	for rows.Next() {
-		var tag *tagEntity.Tag
-		err = rows.Scan(&tag)
+		tag := &tagEntity.Tag{}
+
+		err = rows.Scan(&tag.ID, &tag.Name)
 		if err != nil {
+			fmt.Errorf("error scan", err)
 			return nil, err
 		}
 		tags = append(tags, tag)

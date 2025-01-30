@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"github.com/sallescosta/conduit-api/internal/infra/database"
 	"net/http"
 )
@@ -21,5 +22,9 @@ func (h *TagHandler) ListTags(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	if tags == nil {
+		tags = []*tagEntity.Tag{}
+	}
 	json.NewEncoder(w).Encode(tags)
 }

@@ -19,3 +19,8 @@
 [x] Favorite Article
 [x] Unfavorite Article
 [] Get Tags
+
+[] unity tests
+[] cache (Redis)
+[] Graceful-shutDown
+[] GraphQL

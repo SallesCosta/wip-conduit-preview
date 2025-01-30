@@ -153,4 +153,6 @@ DELETE {{baseUrl}}/articles/{{slug}}/favorite HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-###
+### Get Tags
+GET {{baseUrl}}/tags HTTP/1.1
+Authorization: Bearer {{token}}
