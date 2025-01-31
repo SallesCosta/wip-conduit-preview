@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	//tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"log"
 
 	slugMaker "github.com/gosimple/slug"
@@ -88,7 +89,9 @@ func (a *ArticleDB) CreateArticle(article *articleEntity.Article) error {
 }
 
 func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
-	rows, err := a.DB.Query("SELECT id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt FROM articles")
+	query := `SELECT id, author_id, slug, title, description, body, favorited, favoritesCount, tag_list, createdAt, updatedAt FROM articles ORDER BY createdAt ASC`
+
+	rows, err := a.DB.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -98,41 +101,12 @@ func (a *ArticleDB) ListAllArticles() ([]articleEntity.Article, error) {
 
 	for rows.Next() {
 		var article articleEntity.Article
-
 		err := rows.Scan(&article.ID, &article.AuthorID, &article.Slug, &article.Title, &article.Description,
-			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt,
-			&article.UpdatedAt)
+			&article.Body, &article.Favorited, &article.FavoritesCount, pq.Array(&article.TagList), &article.CreatedAt, &article.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
-
-		// Obter tags associadas ao artigo
-		tagRows, err := a.DB.Query("SELECT tag_id FROM ArticleTags WHERE article_id = $1", article.ID)
-		if err != nil {
-			return nil, err
-		}
-
-		defer tagRows.Close()
-
-		// var tags []*tagEntity.Tag
-		// for tagRows.Next() {
-		// 	var tagID string
-		// 	err := tagRows.Scan(&tagID)
-		// 	if err != nil {
-		// 		return nil, err
-		// 	}
-		//
-		// 	// Obter o nome da tag a partir do ID
-		// 	var tagName string
-		// 	err = a.DB.QueryRow("SELECT name FROM Tags WHERE id = $1", tagID).Scan(&tagName)
-		// 	if err != nil {
-		// 		return nil, err
-		// 	}
-		// 	tags.append(tags, tagName)
-		// }
-
-		// article.TagList = tags
-		// articles = append(articles, article)
+		articles = append(articles, article)
 	}
 
 	if err = rows.Err(); err != nil {

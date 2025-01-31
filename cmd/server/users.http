@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8080/api
-@name = "Jhomas"
-@email = "karol@email.com"
+@name = "eduardo"
+@email = "eduardo@email.com"
 @password = "thomas"
 @userToFollow = eduardo
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzkyNDcyOTcsInN1YiI6IjE5MTgyNjA0LTgzMTEtNDM0Mi04Yzg0LTNhNjY2MzFjZjQ5MCJ9.uvwLrzBqsD3q5t7KaoCikaQRjCjqxA0BymSFRs87y8U
@@ -50,7 +50,7 @@ Authorization: Bearer {{token}}
 {
   "user":{
     "email": {{email}},
-    "username": "nelosoro",
+    "username": "opaaa",
     "Bio": "I am a software engineer"
   }
 }
@@ -74,10 +74,10 @@ Authorization: Bearer {{token}}
 
 {
   "article": {
-    "title": "teste",
+    "title": "yeah yeah",
     "description": "Ever wonder how?",
     "body": "You have to believe",
-    "tag_list": ["oooopa", "react", "mouse"]
+    "tag_list": ["oooopa", "bbbb", "aaaaa"]
   }
 }
 
@@ -87,7 +87,7 @@ Authorization: Bearer {{token}}
 
 ### Feed articles
 
-@limit = 10
+@limit = 50
 @offset = 0
 
 ### Feed articles
@@ -97,10 +97,9 @@ Authorization: Bearer {{token}}
 ###
 
 #@slug = novo-artigo
-@slug = artigo-4
+@slug = opaaa
 #@slug = yeah-artigo
-@articleId = "79c0ee1b-d5c4-422c-9aec-f75767edc67c"
-#@commentId = ede73c8c-4f94-45b8-8605-9d3e1d0555c7
+@articleId = "220ea51e-f14e-48de-a2ce-045179814e1e"
 
 
 ### Update Article by slug
@@ -115,6 +114,11 @@ Authorization: Bearer {{token}}
   }
 }
 
+### Get Article by slug
+GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+
 ### Delete Article by slug
 DELETE {{baseUrl}}/articles/{{slug}} HTTP/1.1
 Authorization: Bearer {{token}}
@@ -126,7 +130,7 @@ Authorization: Bearer {{token}}
 
 {
   "comment": {
-    "body": "NEWCOMMENT",
+    "body": "outro comment",
     "article_id": {{articleId}}
   }
 }
@@ -135,13 +139,13 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/articles/{{slug}}/comments HTTP/1.1
 Authorization: Bearer {{token}}
 
+###
+@commentId = 895d4361-6d00-40c8-bb3e-b9c53a6c2b19
+
 ### Delete Comments
 DELETE {{baseUrl}}/articles/{{slug}}/comments/{{commentId}} HTTP/1.1
 Authorization: Bearer {{token}}
 
-### Get Article by slug
-GET {{baseUrl}}/articles/{{slug}} HTTP/1.1
-Authorization: Bearer {{token}}
 
 ### Add to Favorite
 POST {{baseUrl}}/articles/{{slug}}/favorite HTTP/1.1

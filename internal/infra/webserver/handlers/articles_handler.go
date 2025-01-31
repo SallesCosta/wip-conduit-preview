@@ -128,7 +128,6 @@ func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
-
 	}
 }
 
