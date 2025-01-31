@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	//tagEntity "github.com/sallescosta/conduit-api/internal/entity/tag"
 	"log"
 
 	slugMaker "github.com/gosimple/slug"
