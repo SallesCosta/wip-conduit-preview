@@ -15,7 +15,7 @@ type Article struct {
 	Body           string    `json:"body,omitempty"`
 	TagList        []string  `json:"tag_list"`
 	Favorited      bool      `json:"favorited"`
-	FavoritesCount uint      `json:"favorites_count"`
+	FavoritesCount int       `json:"favorites_count"`
 	CreatedAt      string    `json:"created_at"`
 	UpdatedAt      string    `json:"updated_at"`
 	AuthorID       string    `json:"author_id"`
