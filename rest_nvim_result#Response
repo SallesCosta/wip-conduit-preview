@@ -1,0 +1,8 @@
+### Get Tags
+GET http://localhost:8080/api/tags HTTP/1.1
+HTTP/1.1 200 OK
+
+# @_RES
+[{"id":"efcf1f82-5ba7-42b7-8b31-eedc7dbe6a92","name":"oooopa"},{"id":"280de449-b275-4f5f-bd33-82777269bf55","name":"react"},{"id":"ad9b8af4-e862-4744-b873-edefe358b1c1","name":"mouse"},{"id":"7b16349f-260f-481a-a6f2-07ecd152935e","name":"bbbb"},{"id":"320c12b0-ef5a-4076-8a55-a2680a74616a","name":"aaaaa"}]
+
+# @_END

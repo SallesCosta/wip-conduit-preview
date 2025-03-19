@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/sallescosta/conduit-api/pkg/entity"
 	"time"
+
+	"github.com/sallescosta/conduit-api/pkg/entity"
 )
 
 type Comment struct {
@@ -25,6 +26,7 @@ func NewComment(body, authorId, articleId string) *Comment {
 		AuthorID:  authorId,
 		ArticleID: articleId,
 		CreatedAt: time.Now().Format(time.RFC3339),
+
 		UpdatedAt: time.Now().Format(time.RFC3339),
 	}
 }

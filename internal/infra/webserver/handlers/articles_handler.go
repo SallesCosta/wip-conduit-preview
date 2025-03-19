@@ -105,10 +105,11 @@ func (a *ArticleHandler) CreateArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *ArticleHandler) ListAllArticle(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(fmt.Sprintf("chegou: %v", "v")))
 	articles, err := a.ArticleDB.ListAllArticles()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprintf("Error: %v", err)))
+		w.Write(fmt.Appendf(nil, "Error: %v", err))
 		return
 	}
 

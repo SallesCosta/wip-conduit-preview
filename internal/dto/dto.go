@@ -26,21 +26,12 @@ type CreateArticleInput struct {
 	TagList     []string `json:"tagList,omitempty"`
 }
 
-type UpdateArticleInput struct {
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Body        string   `json:"body"`
-	TagList     []string `json:"tagList,omitempty"`
-}
-
 type AddCommentInput struct {
 	Comment struct {
 		Body      string `json:"body"`
 		ArticleID string `json:"article_id"`
 	} `json:"comment"`
 }
-
-// ##############  outputs ##############
 
 type AuthenticationOutput struct {
 	Email    string `json:"email"`
